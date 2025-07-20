@@ -3,16 +3,48 @@
     <!-- Header -->
     <header class="bg-white/80 backdrop-blur-md shadow-soft border-b border-white/20 sticky top-0 z-50">
       <div class="flex items-center justify-between px-4 py-2">
-        <!-- Logo -->
+        <!-- Logo and Page Title -->
         <div class="flex items-center">
           <div class="w-7 h-7 bg-gradient-primary rounded-lg flex items-center justify-center mr-3 shadow-glow">
             <span class="text-white font-bold text-xs">DP</span>
           </div>
-          <div>
+          <div class="mr-6">
             <h1 class="text-base font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">
               Doruk Park Sitesi
             </h1>
             <p class="text-xs text-gray-500">Site Yönetim Sistemi</p>
+          </div>
+          
+          <!-- Page Title with Icon -->
+          <div class="flex items-center border-l border-gray-200 pl-6">
+            <div class="w-6 h-6 bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg flex items-center justify-center mr-3">
+              <svg v-if="$route.path === '/dashboard'" class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+              <svg v-else-if="$route.path === '/definitions'" class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <svg v-else-if="$route.path === '/residents'" class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+              </svg>
+              <svg v-else-if="$route.path === '/dues'" class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+              </svg>
+              <svg v-else-if="$route.path === '/announcements'" class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+              </svg>
+              <svg v-else-if="$route.path === '/complaints'" class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+              </svg>
+              <svg v-else-if="$route.path === '/maintenance'" class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z"/>
+              </svg>
+              <svg v-else-if="$route.path === '/reports'" class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+            </div>
+            <h2 class="text-lg font-semibold text-gray-900">{{ getPageTitle() }}</h2>
           </div>
         </div>
 
@@ -37,11 +69,11 @@
       </div>
     </header>
 
-    <!-- Main Container - Fixed height -->
+    <!-- Main Container - Fixed height with fixed sidebar -->
     <div class="flex h-[calc(100vh-60px)]">
-      <!-- Sidebar - Fixed -->
-      <aside class="w-64 bg-white/70 backdrop-blur-md shadow-soft border-r border-white/20 flex flex-col flex-shrink-0">
-        <nav class="flex-1 mt-6 px-4 space-y-1">
+      <!-- Sidebar - Fixed position -->
+      <aside class="w-64 bg-white/70 backdrop-blur-md shadow-soft border-r border-white/20 flex flex-col flex-shrink-0 fixed left-0 top-[60px] h-[calc(100vh-60px)]">
+        <nav class="flex-1 mt-6 px-4 space-y-1 overflow-y-auto">
           <router-link 
             v-for="item in menuItems" 
             :key="item.path"
@@ -110,8 +142,8 @@
         </div>
       </aside>
 
-      <!-- Main Content - Scrollable -->
-      <main class="flex-1 overflow-y-auto p-6 animate-fade-in">
+      <!-- Main Content - Scrollable with left margin for fixed sidebar -->
+      <main class="flex-1 overflow-y-auto p-6 animate-fade-in ml-64">
         <slot />
       </main>
     </div>
@@ -167,6 +199,31 @@ const menuItems = [
     icon: 'ChartBarIcon'
   }
 ]
+
+// Get page title based on current route
+const getPageTitle = () => {
+  const route = router.currentRoute.value.path
+  switch (route) {
+    case '/dashboard':
+      return 'Dashboard'
+    case '/definitions':
+      return 'Tanımlar'
+    case '/residents':
+      return 'Daire/Sakin Yönetimi'
+    case '/dues':
+      return 'Aidat Yönetimi'
+    case '/announcements':
+      return 'Duyuru Sistemi'
+    case '/complaints':
+      return 'Şikayet/İstek'
+    case '/maintenance':
+      return 'Bakım/Onarım'
+    case '/reports':
+      return 'Raporlar'
+    default:
+      return 'Dashboard'
+  }
+}
 
 // Update date time every second
 let interval
