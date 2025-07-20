@@ -1,5 +1,5 @@
 // API base URL - Backend sunucunuzun URL'sini buraya yazın
-const API_BASE_URL = 'http://localhost:5105/api' // Backend port'unuza göre değiştirin
+const API_BASE_URL = 'http://localhost:5105/api'
 
 // Auth Service
 export const authService = {
