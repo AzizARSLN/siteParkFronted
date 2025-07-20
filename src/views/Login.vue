@@ -84,8 +84,6 @@
             </a-button>
           </a-form-item>
         </a-form>
-
-
       </div>
     </div>
   </div>
@@ -95,6 +93,7 @@
 import { reactive, ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
+import { authService } from '../services/authService'
 
 const router = useRouter()
 const loading = ref(false)
@@ -109,21 +108,21 @@ const onFinish = async (values) => {
   loading.value = true
   
   try {
-    // Demo giriş kontrolü
-    if (values.email === 'admin@admin.com' && values.password === 'admin') {
-      // Simüle edilmiş API çağrısı
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      message.success('Başarıyla giriş yapıldı! Hoş geldiniz Admin!')
-      
-      // Dashboard'a yönlendir
-      router.push('/dashboard')
-    } else {
-      message.error('E-posta veya şifre hatalı!')
-    }
+    // Backend'e login isteği gönder
+    const response = await authService.login(values.email, values.password)
+    
+    message.success(`Başarıyla giriş yapıldı! Hoş geldiniz ${response.user?.name || 'Admin'}!`)
+    
+    // Dashboard'a yönlendir
+    router.push('/dashboard')
     
   } catch (error) {
-    message.error('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.')
+    // Hata mesajını göster
+    if (error.message) {
+      message.error(error.message)
+    } else {
+      message.error('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.')
+    }
   } finally {
     loading.value = false
   }
@@ -332,7 +331,29 @@ const onFinish = async (values) => {
   transform: translateY(0);
 }
 
+/* Demo bilgileri */
+.demo-info {
+  margin-top: 30px;
+  padding: 20px;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  text-align: center;
+}
 
+.demo-text {
+  color: #667eea;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  font-size: 14px;
+}
+
+.demo-credentials {
+  color: #666;
+  margin: 5px 0;
+  font-size: 13px;
+  font-family: 'Courier New', monospace;
+}
 
 /* Responsive tasarım */
 @media (max-width: 480px) {

@@ -153,6 +153,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { authService } from '../services/authService'
 
 const router = useRouter()
 const currentDateTime = ref('')
@@ -248,7 +249,14 @@ onUnmounted(() => {
   if (interval) clearInterval(interval)
 })
 
-const logout = () => {
-  router.push('/login')
+const logout = async () => {
+  try {
+    await authService.logout()
+    router.push('/login')
+  } catch (error) {
+    console.error('Logout error:', error)
+    // Hata olsa bile login sayfasına yönlendir
+    router.push('/login')
+  }
 }
 </script> 
