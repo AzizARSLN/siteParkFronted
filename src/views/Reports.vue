@@ -1,11 +1,7 @@
 <template>
   <AdminLayout>
     <div>
-      <div class="mb-8 flex justify-between items-center">
-        <div>
-          <h2 class="text-2xl font-bold text-gray-900">Raporlar</h2>
-          <p class="text-gray-600">Site yönetimi raporları ve analizler</p>
-        </div>
+      <div class="mb-8 flex justify-end">
         <div class="flex space-x-3">
           <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
