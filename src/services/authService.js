@@ -1,40 +1,44 @@
 // API base URL - Backend sunucunuzun URL'sini buraya yazın
-const API_BASE_URL = 'http://localhost:5105/api'
+const API_BASE_URL = '/api'
 
 // Auth Service
 export const authService = {
   // Login işlemi
   async login(email, password) {
     try {
+      
+      
       const response = await fetch(`${API_BASE_URL}/User/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        mode: 'cors',
-        credentials: 'include',
         body: JSON.stringify({
           email,
           password
         })
-      })
+      }) 
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: 'Bilinmeyen hata' }))
+        console.error('Response error:', errorData)
         throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`)
-      }
-
+      }  
       const data = await response.json()
-      
-      // Token'ı localStorage'a kaydet
       if (data.token) {
         localStorage.setItem('authToken', data.token)
         localStorage.setItem('user', JSON.stringify(data.user))
-      }
-
+      } 
       return data
     } catch (error) {
+   
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      })
+      
       // Network hatası kontrolü
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
         throw new Error('Backend sunucusuna bağlanılamıyor. Lütfen backend\'in çalıştığından emin olun.')
@@ -133,9 +137,7 @@ export const apiRequest = async (url, options = {}) => {
 
   const config = {
     ...options,
-    headers: defaultHeaders,
-    mode: 'cors',
-    credentials: 'include'
+    headers: defaultHeaders
   }
 
   try {

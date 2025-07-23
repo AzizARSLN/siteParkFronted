@@ -70,7 +70,7 @@
                     <h3 class="text-2xl font-bold text-gray-900">Daire Tanımları</h3>
                     <p class="text-gray-600 mt-1">Site içerisindeki tüm dairelerin yönetimi</p>
                   </div>
-                  <button class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                  <button @click="showApartmentModal = true" class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>
@@ -242,7 +242,7 @@
                     <h3 class="text-2xl font-bold text-gray-900">Kat Tanımları</h3>
                     <p class="text-gray-600 mt-1">Site bloklarının kat yapılandırması</p>
                   </div>
-                  <button class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                  <button @click="showFloorModal = true" class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>
@@ -317,7 +317,7 @@
                     <h3 class="text-2xl font-bold text-gray-900">Kişi Tanımları</h3>
                     <p class="text-gray-600 mt-1">Site sakinleri ve kiracıların yönetimi</p>
                   </div>
-                  <button class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                  <button @click="showPersonModal = true" class="bg-gradient-to-r from-primary-600 to-primary-700 text-white px-6 py-3 rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>
@@ -365,8 +365,8 @@
                   <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
                     <div class="flex items-center justify-between">
                       <div>
-                        <p class="text-blue-100 text-sm font-medium">Sakin</p>
-                        <p class="text-3xl font-bold">{{ filteredPeople.filter(p => p.role === 'Sakin').length }}</p>
+                        <p class="text-blue-100 text-sm font-medium">Malik</p>
+                        <p class="text-3xl font-bold">{{ filteredPeople.filter(p => p.role === 'Malik').length }}</p>
                       </div>
                       <div class="bg-blue-400/30 rounded-lg p-3">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -390,8 +390,32 @@
                   </div>
                 </div>
 
+                <!-- Loading State -->
+                <div v-if="loading" class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                  <div class="flex items-center justify-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                    <span class="ml-3 text-gray-600">Kişiler yükleniyor...</span>
+                  </div>
+                </div>
+
+                <!-- Error State -->
+                <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-xl p-6">
+                  <div class="flex items-center">
+                    <svg class="w-6 h-6 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div>
+                      <h3 class="text-lg font-medium text-red-800">Hata</h3>
+                      <p class="text-red-600 mt-1">{{ error }}</p>
+                      <button @click="loadKisiler" class="mt-3 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
+                        Tekrar Dene
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Enhanced People Table -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div v-else class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                   <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                       <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
@@ -434,13 +458,15 @@
                           </td>
                           <td class="px-6 py-4 whitespace-nowrap">
                             <span :class="[
-                              person.role === 'Sakin' ? 'bg-green-100 text-green-800 border-green-200' : 
-                              person.role === 'Kiracı' ? 'bg-blue-100 text-blue-800 border-blue-200' : 'bg-gray-100 text-gray-800 border-gray-200',
+                              person.role === 'Malik' ? 'bg-green-100 text-green-800 border-green-200' : 
+                              person.role === 'Kiracı' ? 'bg-blue-100 text-blue-800 border-blue-200' : 
+                              person.role === 'Misafir' ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-gray-100 text-gray-800 border-gray-200',
                               'inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border'
                             ]">
                               <span :class="[
-                                person.role === 'Sakin' ? 'bg-green-400' : 
-                                person.role === 'Kiracı' ? 'bg-blue-400' : 'bg-gray-400',
+                                person.role === 'Malik' ? 'bg-green-400' : 
+                                person.role === 'Kiracı' ? 'bg-blue-400' : 
+                                person.role === 'Misafir' ? 'bg-purple-400' : 'bg-gray-400',
                                 'w-2 h-2 rounded-full mr-2'
                               ]"></span>
                               {{ person.role }}
@@ -473,16 +499,256 @@
         </div>
       </div>
     </div>
+
+    <!-- Daire Ekleme Modal -->
+    <div v-if="showApartmentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="bg-gradient-to-r from-primary-600 to-primary-700 text-white p-6 rounded-t-2xl">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-bold">Yeni Daire Ekle</h3>
+            <button @click="closeApartmentModal" class="text-white hover:text-gray-200 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <form @submit.prevent="saveApartment" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Blok</label>
+                <select v-model="newApartment.block" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                  <option value="">Blok Seçin</option>
+                  <option value="A">A Blok</option>
+                  <option value="B">B Blok</option>
+                  <option value="C">C Blok</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Kat</label>
+                <select v-model="newApartment.floor" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                  <option value="">Kat Seçin</option>
+                  <option v-for="floor in availableFloors" :key="floor.id" :value="floor.floorNumber">
+                    {{ floor.name }}
+                  </option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Daire Numarası</label>
+                <input v-model="newApartment.number" type="text" placeholder="Örn: 101" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Oda Sayısı</label>
+                <select v-model="newApartment.rooms" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                  <option value="">Oda Sayısı</option>
+                  <option value="1">1 Oda</option>
+                  <option value="2">2 Oda</option>
+                  <option value="3">3 Oda</option>
+                  <option value="4">4 Oda</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">m²</label>
+                <input v-model="newApartment.area" type="number" placeholder="Örn: 85" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Durum</label>
+                <select v-model="newApartment.status" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                  <option value="">Durum Seçin</option>
+                  <option value="Boş">Boş</option>
+                  <option value="Dolu">Dolu</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+              <button type="button" @click="closeApartmentModal" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                İptal
+              </button>
+              <button type="submit" class="px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200">
+                Kaydet
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kat Ekleme Modal -->
+    <div v-if="showFloorModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-2xl">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-bold">Yeni Kat Ekle</h3>
+            <button @click="closeFloorModal" class="text-white hover:text-gray-200 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <form @submit.prevent="saveFloor" class="space-y-6">
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Blok</label>
+                <select v-model="newFloor.block" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">Blok Seçin</option>
+                  <option value="A">A Blok</option>
+                  <option value="B">B Blok</option>
+                  <option value="C">C Blok</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Kat Adı</label>
+                <input v-model="newFloor.name" type="text" placeholder="Örn: Zemin Kat, 1. Kat" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Kat Numarası</label>
+                <input v-model="newFloor.floorNumber" type="number" placeholder="Örn: 0, 1, 2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              
+              <div class="flex items-center">
+                <input v-model="newFloor.hasElevator" type="checkbox" id="hasElevator" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <label for="hasElevator" class="ml-2 block text-sm text-gray-900">Asansör Var</label>
+              </div>
+            </div>
+            
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+              <button type="button" @click="closeFloorModal" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                İptal
+              </button>
+              <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200">
+                Kaydet
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kişi Ekleme Modal -->
+    <div v-if="showPersonModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6 rounded-t-2xl">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xl font-bold">Yeni Kişi Ekle</h3>
+            <button @click="closePersonModal" class="text-white hover:text-gray-200 transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="p-6">
+          <form @submit.prevent="savePerson" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Ad Soyad</label>
+                <input v-model="newPerson.name" type="text" placeholder="Ad Soyad" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">TC Kimlik No</label>
+                <input v-model="newPerson.tc" type="text" placeholder="11 haneli TC" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
+                <input v-model="newPerson.phone" type="tel" placeholder="0532 123 45 67" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">E-posta</label>
+                <input v-model="newPerson.email" type="email" placeholder="ornek@email.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Daire</label>
+                <select v-model="newPerson.apartment" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="">Daire Seçin</option>
+                  <option v-for="apartment in apartments" :key="apartment.id" :value="apartment.number">
+                    {{ apartment.number }} - {{ apartment.status }}
+                  </option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Rol</label>
+                <select v-model="newPerson.role" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="">Rol Seçin</option>
+                  <option value="Malik">Malik</option>
+                  <option value="Kiracı">Kiracı</option>
+                  <option value="Misafir">Misafir</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+              <button type="button" @click="closePersonModal" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                İptal
+              </button>
+              <button type="submit" class="px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200">
+                Kaydet
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </AdminLayout>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import AdminLayout from '../components/AdminLayout.vue'
+import { kisiService } from '../services/kisiService.js'
 
 const activeTab = ref('apartments')
 const apartmentSearch = ref('')
 const peopleSearch = ref('')
+
+// Modal states
+const showApartmentModal = ref(false)
+const showFloorModal = ref(false)
+const showPersonModal = ref(false)
+
+// Form data
+const newApartment = ref({
+  block: '',
+  floor: '',
+  number: '',
+  rooms: '',
+  area: '',
+  status: ''
+})
+
+const newFloor = ref({
+  block: '',
+  name: '',
+  floorNumber: '',
+  hasElevator: false
+})
+
+const newPerson = ref({
+  name: '',
+  tc: '',
+  phone: '',
+  email: '',
+  apartment: '',
+  role: ''
+})
 
 // Demo data
 const apartments = ref([
@@ -503,13 +769,9 @@ const floors = ref([
   { id: 6, name: '1. Kat', floorNumber: 1, block: 'B', daireCount: 2, hasElevator: true },
 ])
 
-const people = ref([
-  { id: 1, name: 'Ahmet Yılmaz', tc: '12345678901', phone: '0532 123 45 67', email: 'ahmet@email.com', apartment: 'A-101', role: 'Sakin' },
-  { id: 2, name: 'Fatma Demir', tc: '12345678902', phone: '0533 234 56 78', email: 'fatma@email.com', apartment: 'A-102', role: 'Sakin' },
-  { id: 3, name: 'Mehmet Kaya', tc: '12345678903', phone: '0534 345 67 89', email: 'mehmet@email.com', apartment: 'A-202', role: 'Kiracı' },
-  { id: 4, name: 'Ayşe Özkan', tc: '12345678904', phone: '0535 456 78 90', email: 'ayse@email.com', apartment: 'B-101', role: 'Sakin' },
-  { id: 5, name: 'Ali Veli', tc: '12345678905', phone: '0536 567 89 01', email: 'ali@email.com', apartment: 'B-102', role: 'Sakin' },
-])
+const people = ref([])
+const loading = ref(false)
+const error = ref(null)
 
 const filteredApartments = computed(() => {
   return apartments.value.filter(apartment => {
@@ -533,4 +795,206 @@ const filteredPeople = computed(() => {
     )
   })
 })
+
+// Available floors for apartment form
+const availableFloors = computed(() => {
+  return floors.value
+})
+
+// Modal functions
+const closeApartmentModal = () => {
+  showApartmentModal.value = false
+  resetApartmentForm()
+}
+
+const closeFloorModal = () => {
+  showFloorModal.value = false
+  resetFloorForm()
+}
+
+const closePersonModal = () => {
+  showPersonModal.value = false
+  resetPersonForm()
+}
+
+const resetApartmentForm = () => {
+  newApartment.value = {
+    block: '',
+    floor: '',
+    number: '',
+    rooms: '',
+    area: '',
+    status: ''
+  }
+}
+
+const resetFloorForm = () => {
+  newFloor.value = {
+    block: '',
+    name: '',
+    floorNumber: '',
+    hasElevator: false
+  }
+}
+
+const resetPersonForm = () => {
+  newPerson.value = {
+    name: '',
+    tc: '',
+    phone: '',
+    email: '',
+    apartment: '',
+    role: ''
+  }
+}
+
+const saveApartment = () => {
+  // Form validation
+  if (!newApartment.value.block || !newApartment.value.floor || !newApartment.value.number || 
+      !newApartment.value.rooms || !newApartment.value.area || !newApartment.value.status) {
+    alert('Lütfen tüm alanları doldurun!')
+    return
+  }
+
+  // Create new apartment
+  const apartment = {
+    id: apartments.value.length + 1,
+    number: `${newApartment.value.block}-${newApartment.value.number}`,
+    floor: newApartment.value.floor,
+    block: newApartment.value.block,
+    rooms: parseInt(newApartment.value.rooms),
+    area: parseInt(newApartment.value.area),
+    status: newApartment.value.status
+  }
+
+  apartments.value.push(apartment)
+  closeApartmentModal()
+}
+
+const saveFloor = () => {
+  // Form validation
+  if (!newFloor.value.block || !newFloor.value.name || newFloor.value.floorNumber === '') {
+    alert('Lütfen tüm alanları doldurun!')
+    return
+  }
+
+  // Create new floor
+  const floor = {
+    id: floors.value.length + 1,
+    name: newFloor.value.name,
+    floorNumber: parseInt(newFloor.value.floorNumber),
+    block: newFloor.value.block,
+    daireCount: 0,
+    hasElevator: newFloor.value.hasElevator
+  }
+
+  floors.value.push(floor)
+  closeFloorModal()
+}
+
+// Kişileri yükle
+const loadKisiler = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    const kisiler = await kisiService.getKisiler()
+    people.value = kisiler.map(kisi => ({
+      id: kisi.id,
+      name: kisi.adSoyad,
+      tc: kisi.tcKimlikNo,
+      phone: kisi.telefon,
+      email: kisi.email,
+      apartment: kisi.daire?.daireNo || 'Belirtilmemiş',
+      role: kisi.kisiTipi === 0 ? 'Malik' : kisi.kisiTipi === 1 ? 'Kiracı' : 'Misafir',
+      binaId: kisi.binaId,
+      katId: kisi.katId,
+      daireId: kisi.daireId
+    }))
+  } catch (err) {
+    error.value = 'Kişiler yüklenirken hata oluştu: ' + err.message
+    console.error('Kişiler yüklenirken hata:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+// Component yüklendiğinde kişileri getir
+onMounted(() => {
+  loadKisiler()
+})
+
+const savePerson = async () => {
+  // Form validation
+  if (!newPerson.value.name || !newPerson.value.tc || !newPerson.value.phone || 
+      !newPerson.value.email || !newPerson.value.apartment || !newPerson.value.role) {
+    alert('Lütfen tüm alanları doldurun!')
+    return
+  }
+
+  try {
+    // Backend'e gönderilecek veri formatı
+    const kisiData = {
+      adSoyad: newPerson.value.name,
+      tcKimlikNo: newPerson.value.tc,
+      telefon: newPerson.value.phone,
+      email: newPerson.value.email,
+      kisiTipi: newPerson.value.role === 'Malik' ? 0 : newPerson.value.role === 'Kiracı' ? 1 : 2,
+      // Bu alanlar seçilen daireye göre doldurulmalı
+      binaId: 1, // Varsayılan değer, gerçek uygulamada seçimden gelmeli
+      katId: 1, // Varsayılan değer, gerçek uygulamada seçimden gelmeli
+      daireId: 1 // Varsayılan değer, gerçek uygulamada seçimden gelmeli
+    }
+
+    const savedKisi = await kisiService.createKisi(kisiData)
+    
+    // Yeni kişiyi listeye ekle
+    const newPersonData = {
+      id: savedKisi.id,
+      name: savedKisi.adSoyad,
+      tc: savedKisi.tcKimlikNo,
+      phone: savedKisi.telefon,
+      email: savedKisi.email,
+      apartment: newPerson.value.apartment,
+      role: savedKisi.kisiTipi === 0 ? 'Malik' : savedKisi.kisiTipi === 1 ? 'Kiracı' : 'Misafir'
+    }
+    
+    people.value.push(newPersonData)
+    closePersonModal()
+  } catch (err) {
+    alert('Kişi eklenirken hata oluştu: ' + err.message)
+    console.error('Kişi eklenirken hata:', err)
+  }
+}
+
+// Kişi silme fonksiyonu
+const deletePerson = async (id) => {
+  if (!confirm('Bu kişiyi silmek istediğinizden emin misiniz?')) {
+    return
+  }
+
+  try {
+    await kisiService.deleteKisi(id)
+    // Listeden kişiyi kaldır
+    people.value = people.value.filter(p => p.id !== id)
+  } catch (err) {
+    alert('Kişi silinirken hata oluştu: ' + err.message)
+    console.error('Kişi silinirken hata:', err)
+  }
+}
+
+// Kişi düzenleme fonksiyonu
+const editPerson = (person) => {
+  // Form verilerini doldur
+  newPerson.value = {
+    name: person.name,
+    tc: person.tc,
+    phone: person.phone,
+    email: person.email,
+    apartment: person.apartment,
+    role: person.role
+  }
+  
+  // Modal'ı aç
+  showPersonModal.value = true
+}
 </script> 
